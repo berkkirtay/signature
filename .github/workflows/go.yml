@@ -1,0 +1,38 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
+
+    - name: Build
+      run: |
+        cd ./src
+        go build -o ../example/main
+        cd ..
+        cd example
+        ./main --generate
+        ./main --sign private_key.pem file_to_sign.txt
+        ./main --verify public_key.pem signature.pem file_to_sign.txt > result.log
+
+    - name: Compare output with "OK"
+      run: |
+        output=$(cat result.log)
+        if [[ "$output" != "OK" ]]; then
+          echo "The result did not match 'OK'"
+          exit 1
+        fi
+        echo "The result is 'OK'."
