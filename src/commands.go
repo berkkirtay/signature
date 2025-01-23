@@ -34,10 +34,10 @@ func handleCommand(command string, args ...string) {
 }
 
 func availableCommands() {
-	generate := fmt.Sprintf("%s, %s : %s", GENERATE, G, "a")
-	sign := fmt.Sprintf("%s, %s : %s", SIGN, S, "a")
-	verify := fmt.Sprintf("%s, %s : %s", VERIFY, V, "a")
-	help := fmt.Sprintf("%s, %s : %s", HELP, H, "a")
+	generate := fmt.Sprintf("%s, %s: %s", GENERATE, G, ". --generate")
+	sign := fmt.Sprintf("%s,     %s: %s", SIGN, S, ". --sign private_key file_to_sign")
+	verify := fmt.Sprintf("%s,   %s: %s", VERIFY, V, ". --verify public_key signature file_to_sign")
+	help := fmt.Sprintf("%s,     %s: %s", HELP, H, ". --help")
 	fmt.Printf("Available commands are:\n%s\n%s\n%s\n%s\n", generate, sign, verify, help)
 }
 

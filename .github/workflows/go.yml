@@ -7,7 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -22,16 +21,31 @@ jobs:
       run: |
         cd ./src
         go build -o ../example/main
-        cd ..
-        cd example
+
+    - name: Run commands
+      run: |
+        cd ./example
         ./main --generate
+        public_key=$(cat public_key.pem)
+        private_key=$(cat private_key.pem)
+
+        ./main --generate
+        new_public_key=$(cat public_key.pem)
+        new_private_key=$(cat private_key.pem)
+
+        if [[ "$public_key" == "$new_public_key" || "$private_key" == "$new_private_key" ]]; then
+          echo "Key generation duplication."
+          exit 1
+        fi
+        
         ./main --sign private_key.pem file_to_sign.txt
         ./main --verify public_key.pem signature.pem file_to_sign.txt > result.log
 
-    - name: Compare output with "OK"
+    - name: Validate result
       run: |
+        cd ./example
         output=$(cat result.log)
-        if [[ "$output" != "OK" ]]; then
+        if [[ "$output" != "Signature validation -> OK" ]]; then
           echo "The result did not match 'OK'"
           exit 1
         fi

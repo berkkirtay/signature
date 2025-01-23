@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
 	"strconv"
 	"time"
@@ -57,7 +58,9 @@ func generateSignature(privateKey string, data string) string {
 		panic(err)
 	}
 	headers := make(map[string]string)
-	headers["timestamp"] = timestamp
+	headers["Timestamp"] = timestamp
+	headers["Hash"] = "SHA256"
+	headers["Digest"] = hex.EncodeToString(hash[:])
 	signatureResult := pem.EncodeToMemory(
 		&pem.Block{
 			Type:    "SIGNATURE",
@@ -74,7 +77,7 @@ func verifySignature(data string, signature string, publicKey string) bool {
 	if err != nil {
 		panic(err)
 	}
-	hash := generateSHA256Object([]string{data, decodedSignatureBlock.Headers["timestamp"]})
+	hash := generateSHA256Object([]string{data, decodedSignatureBlock.Headers["Timestamp"]})
 	err = rsa.VerifyPKCS1v15(key, crypto.SHA256, hash[:], decodedSignatureBlock.Bytes)
 	return err == nil
 }
@@ -86,12 +89,3 @@ func generateSHA256Object(values []string) [32]byte {
 	}
 	return sha256.Sum256(data)
 }
-
-// block := &pem.Block{
-// 	Type: "MESSAGE",
-// 	Bytes: pubkey_bytes ,
-// }
-
-// if err := pem.Encode(os.Stdout, block); err != nil {
-// 	log.Fatal(err)
-// }
