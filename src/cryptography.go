@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Berk Kirtay
+
 package main
 
 import (

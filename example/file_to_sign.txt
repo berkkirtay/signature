@@ -1,1 +1,13 @@
-test file
+## A Simple PKCS-Based File Signer 
+A simple digital signature processor program written in Go. Built to provide authenticity for my documents, papers and code.
+
+### Usage
+You can compile the code and use the following commands with the executable:
+- --generate
+- --sign {private_key} {file}
+- --verify {public_key} {signature} {file}
+- --help
+
+Where {*} represents the file paths for the key and signature files.
+
+---

@@ -1,2 +1,3 @@
-*.pem
+private_key.pem
 *.log
+main
