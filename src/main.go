@@ -10,6 +10,8 @@ import (
 const (
 	GENERATE = "--generate"
 	G        = "-g"
+	ALL      = "--all"
+	A        = "-a"
 	SIGN     = "--sign"
 	S        = "-s"
 	VERIFY   = "--verify"
@@ -28,6 +30,8 @@ func main() {
 func handleCommand(command string, args ...string) {
 	if command == GENERATE || command == G {
 		generate()
+	} else if command == ALL || command == A {
+		createPayloadFromFiles(args...)
 	} else if command == SIGN || command == S {
 		usageMessage(len(args), 2)
 		sign(args...)
@@ -43,10 +47,11 @@ func handleCommand(command string, args ...string) {
 
 func availableCommands() {
 	generate := fmt.Sprintf("%s, %s: %s", GENERATE, G, ". --generate")
+	all := fmt.Sprintf("%s,      %s: %s", ALL, A, ". --all payload_file")
 	sign := fmt.Sprintf("%s,     %s: %s", SIGN, S, ". --sign private_key file_to_sign")
 	verify := fmt.Sprintf("%s,   %s: %s", VERIFY, V, ". --verify public_key signature file_to_sign")
 	help := fmt.Sprintf("%s,     %s: %s", HELP, H, ". --help")
-	fmt.Printf("Available commands are:\n%s\n%s\n%s\n%s\n", generate, sign, verify, help)
+	fmt.Printf("Available commands are:\n%s\n%s\n%s\n%s\n%s\n", generate, all, sign, verify, help)
 }
 
 func generate() {
@@ -76,6 +81,16 @@ func verify(args ...string) {
 	} else {
 		fmt.Printf("Signature validation -> FAILURE\n")
 	}
+}
+
+func createPayloadFromFiles(args ...string) {
+	payload, count := readAll()
+	var fileName string = "payload.txt"
+	if len(args) > 0 {
+		fileName = args[0]
+	}
+	dumpToFile(payload, fileName)
+	fmt.Printf("%d files are merged into a payload file %s.\n", count, fileName)
 }
 
 func usageMessage(argsSize int, wantedSize int) {

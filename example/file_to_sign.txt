@@ -4,6 +4,7 @@ A simple digital signature processor program written in Go. Built to provide aut
 ### Usage
 You can compile the code and use the following commands with the executable:
 - --generate
+- --all
 - --sign {private_key} {file}
 - --verify {public_key} {signature} {file}
 - --help

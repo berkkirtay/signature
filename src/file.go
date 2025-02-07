@@ -31,3 +31,24 @@ func readFromFile(fileName string) string {
 	}
 	return string(data)
 }
+
+func readAll() (string, int) {
+	var payload string = ""
+	var count int = 0
+	err := filepath.Walk("./", func(filePath string, info os.FileInfo, err error) error {
+		if err != nil {
+			panic(err)
+		}
+		if info.IsDir() {
+			return nil
+		}
+		payload += readFromFile(filePath)
+		count++
+		return nil
+	})
+
+	if err != nil {
+		panic(err)
+	}
+	return payload, count
+}
